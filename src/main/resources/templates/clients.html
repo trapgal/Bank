@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+
+xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Admin Area | Dashboard</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" type="text/css" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}"/>
+<link rel="stylesheet" type="text/css" href="../static/css/myStyle.css" th:href="@{/css/myStyle.css}"/>
+    <script src="http://cdn.ckeditor.com/4.6.1/standard/ckeditor.js"></script>
+    
+  </head>
+  <body>
+
+    <nav class="navbar navbar-default">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">AdminStrap</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+           <li ><a th:href="@{/operations}">Operations</a></li>
+<li  ><a th:href="@{/Comptes}" > Comptes</a></li>
+            <li ><a  href="#" class="active">Clients</a></li>
+          </ul>
+           
+          <ul class="nav navbar-nav navbar-right" >
+            <li><a th:href="@{/login?logout}">Logout</a></li>
+          </ul>
+       
+        <!--.nav-collapse -->
+        </div>
+      </div>
+    </nav>
+
+    <header id="header">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-10">
+            <h1><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Votre Banque en ligne <small> <br/>Accédez à vos comptes en ligne et faites vos transactions en toute sécurité</small></h1>
+          </div>
+          
+        </div>
+      </div>
+    </header>
+
+ 
+
+    <section id="main">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4">
+          <div class="panel panel-default" >
+              <div class="panel-heading main-color-bg">
+                <h3 class="panel-title">Ajout d'un compte:</h3>
+              </div>
+              <div class="panel-body">
+                <form th:action="@{/creerClient}" method="POST">
+                  <div class="form-group">
+                   
+                    <label> Nom :</label>
+                    <input type="text" class="form-control"  name="nom" placeholder="Entrer le nom" required="required"/>
+                    
+                    
+                    <label>	Prénom  :</label> <br/>
+                    
+                    
+                    <input type="text" class="form-control"  name="prenom" placeholder="Entrer le prenom" required="required" />
+                    <label>Email: </label>
+                    <input type="text" class="form-control"  name="email" placeholder="Entrer l'email" required="required"/>
+                    <label>Adresse: </label>
+                    <input type="text" class="form-control"  name="adresse" placeholder="Entrer l'adresse" required="required" />
+                    
+                    <label>Télephone : </label>
+                    <input type="number" id="mobile"   class="form-control"  name="tel" placeholder="Entrer le télephone" required="required" onkeyup="check(); return false;" />
+<span id="message"></span>
+
+
+                  </div>
+                 
+                  
+                  
+                  
+                  <input style=" margin-left: 230px" type="submit"  class="btn btn-danger" value="Ajouter"/>
+                </form>
+                
+              </div>
+              </div> 
+
+              </div>
+            
+              
+          <div class="col-md-8">
+            
+            <!-- Website Overview -->
+            <div class="panel panel-default" >
+              <div class="panel-heading main-color-bg">
+                <h3 class="panel-title">Recherche par mot clé:</h3>
+              </div>
+              <div class="panel-body">
+                              <form th:action="@{/consulterClient}" method="GET">
+              
+                
+                  <div class="form-group">
+                    <label>Rechercher :</label>
+        <div class="inner-addon right-addon">
+          <i class="glyphicon glyphicon-search"></i>
+          <input type="text" class="form-control" placeholder="Search" name="motCle" />
+        </div>                  </div>
+                 
+                  
+                  
+                  
+                  <input type="submit" class="btn btn-default" value="Search"/>
+                </form>
+              </div>
+              </div>
+
+          
+              <!-- Latest Users -->
+               <div class="panel panel-default"  >
+                <div class="panel-heading">
+                  <h3 class="panel-title">Liste des opérations : </h3>
+                </div>
+                <div class="panel-body">
+                  <table class="table table-striped">
+<tr>
+<th>Code </th><th>Nom</th><th>Prénom</th><th>Email</th><th>Adresse</th><th>Télephone</th><th>Modifier</th><th>Supprimer</th>
+</tr>
+
+<tr th:each="c:${lsClients}">
+<td th:text="${c.code}"></td>
+<td th:text="${c.nom}"></td>
+<td th:text="${c.prenom}"></td>
+<td th:text="${c.email}"></td>
+<td th:text="${c.adresse}"></td>
+<td th:text="${c.tel}"></td>
+  <td> <form th:action="@{/modifierClient}" method="POST" > <input hidden="hidden" name="code" th:value="${c.code}"/><button  class="btn btn-default" type="submit">Edit</button></form></td>  
+ <td> <form th:action="@{/SupprimerClient}" method="POST" > <input hidden="hidden" name="code" th:value="${c.code}"/><button  class="btn btn-danger" type="submit" >Delete</button></form></td> 
+
+</tr>
+</table>
+<div class="container">
+<ul class="nav nav-pills">
+<li th:each="p,status:${pages}"><a th:href="@{/consulterClient(code=${code},page=${status.index})}" th:text="${status.index}"> </a></li>
+</ul>
+</div>
+
+                </div>
+              </div> 
+          </div>
+          
+          </div>
+          </div>
+        
+    </section>
+
+    <footer id="footer">
+      <p>Copyright AdminStrap, &copy; 2017</p>
+    </footer>
+
+    <!-- Modals -->
+
+    <!-- Add Page -->
+    <div class="modal fade" id="addPage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form>
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Add Page</h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Page Title</label>
+          <input type="text" class="form-control" placeholder="Page Title"/>
+        </div>
+        <div class="form-group">
+          <label>Page Body</label>
+          <textarea name="editor1" class="form-control" placeholder="Page Body"></textarea>
+        </div>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox"/> Published
+          </label>
+        </div>
+        <div class="form-group">
+          <label>Meta Tags</label>
+          <input type="text" class="form-control" placeholder="Add Some Tags..."/>
+        </div>
+        <div class="form-group">
+          <label>Meta Description</label>
+          <input type="text" class="form-control" placeholder="Add Meta Description..."/>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+
+ 
+ <script>
+ CKEDITOR.replace( 'editor1' );
+ 
+ </script>
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/myScript.js"></script>
+    
+  </body>
+</html>
